@@ -1,0 +1,72 @@
+{% extends "dash_base.html" %}
+{% block title %}My event tickets{% endblock %}
+
+{% block content %}
+<h1 class="page-title">Unpaid events</h1>
+<p class="auth-sub">The list of unpaid event.</p>
+
+{% if  tickets %}
+<section class="panel">
+  <div class="panel-head">
+    <h2>Your tickets</h2>
+  </div>
+
+  <div class="table-eve">
+    <table class="events tickets-table">
+      <thead>
+        <tr>
+          <th>Event</th>
+          <th>Date &amp; time</th>
+          <th>Venue</th>
+          <th>Payment</th>
+          <th class="col-actions">Ticket</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for t in tickets %}
+        {% if t.payment.payment==False %}
+        <tr>
+          <td data-label="Event">
+            <div class="cell-main">{{ t.event.title }}</div>
+            <div class="cell-sub">Joined as {{ t.payment.full_name }}</div>
+          </td>
+          <td data-label="Date &amp; time" class="nowrap">
+            {{ t.event.date_time.strftime("%d %b %Y, %H:%M") }}
+          </td>
+          <td data-label="Venue">{{ t.event.venue }}</td>
+          <td data-label="Payment">
+
+              <span class="badge badge-suspended">Unpaid</span>
+
+          </td>
+          <td data-label="Ticket" class="col-actions">
+           Not yet pay for the event
+          </td>
+        </tr>
+        {% else %}
+        <div class="empty-state">
+    <h2>There isn't any unpaid event</h2>
+    <p>  Join an event.</p>
+    <a class="btn btn-primary" href="/dashboard/join/event">join event</a>
+  </div>
+        {% endif %}
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <p class="field-hint" style="margin-top:18px;">
+    Tip: Pay for the event to get your ticket.
+  </p>
+</section>
+
+{% else %}
+<section class="panel">
+  <div class="empty-state">
+    <h2>There isn't any event</h2>
+    <p> join an event.</p>
+    <a class="btn btn-primary" href="/dashboard/join/event">Join an event</a>
+  </div>
+</section>
+{% endif %}
+{% endblock %}

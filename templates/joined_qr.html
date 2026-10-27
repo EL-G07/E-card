@@ -1,0 +1,84 @@
+{% extends "dash_base.html" %}
+{% block title %}My event tickets{% endblock %}
+
+{% block content %}
+<h1 class="page-title">Check the event ticket</h1>
+<p class="auth-sub">Register the attendant who have paid .</p>
+
+{% if tickets %}
+<section class="panel">
+  <div class="panel-head">
+    <h2>Your tickets</h2>
+  </div>
+
+  <div class="table-eve">
+    <table class="events tickets-table">
+      <thead>
+        <tr>
+          <th>Event</th>
+          <th>Attendant</th>
+          <th>Venue</th>
+          <th>Payment</th>
+          <th class="col-actions">Ticket</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for t in tickets %}
+        <tr>
+          <td data-label="Event">
+            <div class="cell-main">{{ t.event.title }}</div>
+            <div class="cell-sub">Joined as {{ t.event.full_name }}</div>
+          </td>
+          <td data-label="attendant" class="nowrap">{{ t.payment.full_name }}</td>
+          <td data-label="Venue">{{ t.event.venue }}</td>
+          <td data-label="Payment">
+            {% if t.payment.payment %}
+              <span class="badge badge-active">Paid</span>
+            {% else %}
+              <span class="badge badge-suspended">Unpaid</span>
+              {% if t.event.creator_id==user.id %}
+              <form method="post" action="/dashboard/tickets/paid/{{ t.payment.id }}" novalidate>
+                <button type="submit" class="badge badge-active">Done</button>
+              </form>
+              {% endif %}
+            {% endif %}
+          </td>
+           <td data-label="Ticket" class="col-actions">
+             {% if t.event.creator_id == user.id %}
+              <span class="badge badge-soon">Owner</span>
+            {% else %}
+              <div class="row-actions">
+                <a class="btn btn-outline btn-xs"
+                   href="{{ t.qr_data_uri }}"
+                   download="ticket-{{ t.event.id }}.png"
+                   title="Download QR as image">
+                   PNG
+                </a>
+                <a class="btn btn-primary btn-xs"
+                   href="/dashboard/events/{{ t.event.id }}/ticket.pdf">
+                   Download PDF
+                </a>
+              </div>
+            {% endif %}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <p class="field-hint" style="margin-top:18px;">
+    Tip: the PDF includes the QR code, your name, the event details and a short explanation for the staff who scans it.
+  </p>
+</section>
+
+{% else %}
+<section class="panel">
+  <div class="empty-state">
+    <h2>No Attendant and event</h2>
+    <p>Create and event and share the event key and the event title to attendants.</p>
+    <a class="btn btn-primary" href="/dashboard/create/event">Create an event</a>
+  </div>
+</section>
+{% endif %}
+{% endblock %}

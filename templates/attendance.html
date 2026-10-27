@@ -1,0 +1,31 @@
+{% extends "dash_base.html" %}
+{% block title %}Attendance event{% endblock %}
+
+{% block content %}
+<h1 class="page-title">Attendance of the event</h1>
+ <form method="post" action="/dashboard/attendance/event" novalidate>
+<div class="field  {% if errors.type %}has-error{% endif %}">
+      <label for="type">Choose an event</label>
+    <div class="password-wrap">
+      <input  id="type" name="title"   value="{{ values.type }}"
+             list="event-types" placeholder="Pick one or type your own" required>
+      <button type="submit" class="toggle-pass2"  data-target="type" aria-label="Button">Search</button>
+    </div>
+      <datalist id="event-types">
+        {% for e in event %}
+        <option value="{{e.title}}">
+         {% endfor %}
+      </datalist>
+      {% if errors.type %}
+        <p class="field-error">{{ errors.type }}</p>
+      {% else %}
+        <p class="field-hint">Pick from the list so to get the list attendee.</p>
+      {% endif %}
+    </div>
+ </form>
+
+
+{% block page %}{% endblock %}
+
+
+{% endblock %}

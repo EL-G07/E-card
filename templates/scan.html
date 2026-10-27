@@ -1,0 +1,67 @@
+{% extends "dash_base.html" %}
+{% block title %}Scan tickets{% endblock %}
+
+{% block content %}
+<h1 class="page-title">Scan tickets</h1>
+<p class="auth-sub">Point the camera at the guest's QR code. The scan is saved automatically.</p>
+
+<section class="panel form-panel">
+  <div class="field">
+    <label for="camera">Camera</label>
+    <div id="reader" style="width:100%; border:1px dashed var(--sky-300); border-radius:10px; min-height:240px; display:grid; place-items:center; color: var(--muted);">
+      Camera will appear here
+    </div>
+    <p class="field-hint">Or paste / type the ticket code below if the camera cannot start.</p>
+  </div>
+
+  <form id="scanForm" method="post" action="/dashboard/scan">
+    <div class="field">
+      <label for="payload">Ticket code</label>
+      <input id="payload" name="payload" type="text"
+             placeholder="KARIBU|EVENT:...|USER:..."
+             autocomplete="off" required>
+    </div>
+    <button type="submit" class="btn btn-primary">Check ticket</button>
+  </form>
+
+  {% if result %}
+    <div class="alert {% if result.ok %}alert-success{% else %}alert-error{% endif %}"
+         style="margin-top:22px;">
+      {% if result.ok %}
+        {% if result.already %}
+          <strong>{{ result.guest }}</strong> already entered {{ result.event }}
+          on {{ result.when.strftime("%d %b %Y, %H:%M") }}.
+        {% else %}
+          <strong>{{ result.guest }}</strong> checked in for {{ result.event }}.
+        {% endif %}
+      {% else %}
+        {{ result.reason }}
+        {% if result.guest %} — {{ result.guest }} ({{ result.event }}){% endif %}
+      {% endif %}
+    </div>
+  {% endif %}
+</section>
+
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<script>
+  (function () {
+    var input = document.getElementById("payload");
+    var scanner;
+    try {
+      scanner = new Html5Qrcode("reader");
+      Html5Qrcode.getCameras().then(function (cams) {
+        if (!cams || !cams.length) return;
+        scanner.start(
+          { facingMode: "environment" },
+          { fps: 10, qrbox: 250 },
+          async function (decodedText) {
+            input.value = decodedText;
+            try { await scanner.stop(); } catch (_) {}
+            document.getElementById("scanForm").submit();
+          }
+        ).catch(function () { /* fall back to typing */ });
+      }).catch(function () {});
+    } catch (e) { /* html5-qrcode failed to load */ }
+  })();
+</script>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends "dash_base.html" %}
+{% block title %}Forgot event key{% endblock %}
+
+{% block content %}
+<h1 class="page-title">Forgot event key</h1>
+<p class="auth-sub">
+  Ask the event organiser for their password. If it's correct, you'll be added to the event automatically.
+</p>
+
+<section class="panel form-panel">
+  {% if errors.identity %}
+    <div class="alert alert-error" role="alert">{{ errors.identity }}</div>
+  {% endif %}
+
+  <form method="post" action="/dashboard/join/forgot-key" novalidate>
+    <div class="field {% if errors.title %}has-error{% endif %}">
+      <label for="title">Event title</label>
+      <input id="title" name="title" type="text" value="{{ values.title }}"
+             placeholder="e.g. Juma & Anna's Wedding" required>
+      {% if errors.title %}<p class="field-error">{{ errors.title }}</p>{% endif %}
+    </div>
+
+    <div class="field {% if errors.creator_password %}has-error{% endif %}">
+      <label for="creator_password">Organiser's password</label>
+      <div class="password-wrap">
+        <input id="creator_password" name="creator_password" type="password"
+               autocomplete="off" required>
+        <button type="button" class="toggle-pass" data-target="creator_password"
+                aria-label="Show password">Show</button>
+      </div>
+      {% if errors.creator_password %}
+        <p class="field-error">{{ errors.creator_password }}</p>
+      {% else %}
+        <p class="field-hint">Ask the organiser in person. This is their account password, not the event key.</p>
+      {% endif %}
+    </div>
+
+    <button type="submit" class="btn btn-primary">Join event</button>
+    <a class="btn btn-outline" href="/dashboard/join/event">Back</a>
+  </form>
+</section>
+{% endblock %}

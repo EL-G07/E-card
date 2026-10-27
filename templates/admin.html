@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Admin · {{ app_name }}</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', path='style.css') }}?v={{ css_v }}">
+</head>
+<body>
+  <header class="site-header">
+    <div class="bar">
+      <a class="brand" href="/admin">{{ app_name }} <span class="brand-tag">Admin</span></a>
+      <form method="post" action="/logout" class="header-actions">
+        <span class="header-user">{{ admin.full_name }}</span>
+        <button type="submit" class="btn btn-outline btn-sm">Log out</button>
+      </form>
+    </div>
+  </header>
+
+  <main class="page">
+    <h1 class="page-title">Members</h1>
+    <p class="auth-sub">View registered members and manage their accounts.</p>
+
+    {% if message %}
+    <div class="alert {{ 'alert-error' if kind == 'error' else 'alert-success' }}" role="status">
+      {{ message }}
+      {% if temp_password %}
+      <div class="temp-pass">
+        Temporary password: <code>{{ temp_password }}</code>
+        <span>Shown once. Give it to the user so they can log in.</span>
+      </div>
+      {% endif %}
+    </div>
+    {% endif %}
+
+    <div class="stats">
+      <div class="stat"><span class="stat-num">{{ total }}</span><span class="stat-label">Total members</span></div>
+      <div class="stat"><span class="stat-num">{{ active }}</span><span class="stat-label">Active</span></div>
+      <div class="stat"><span class="stat-num">{{ suspended }}</span><span class="stat-label">Suspended</span></div>
+    </div>
+
+    <form method="get" action="/admin" class="search" role="search">
+      <input type="search" name="q" value="{{ q }}" placeholder="Search by name, username, email or phone" aria-label="Search members">
+      <button type="submit" class="btn btn-primary btn-sm">Search</button>
+      {% if q %}<a class="link" href="/admin">Clear</a>{% endif %}
+    </form>
+
+    <div class="table-card">
+      <table class="users">
+        <thead>
+          <tr>
+            <th>Member</th>
+            <th>Contact</th>
+            <th>Joined</th>
+            <th>Status</th>
+            <th class="col-actions">Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+        {% for u in users %}
+          <tr>
+            <td data-label="Member">
+              <div>
+                <div class="cell-main">{{ u.full_name }}</div>
+                <div class="cell-sub">@{{ u.username }}</div>
+              </div>
+            </td>
+            <td data-label="Contact">
+              <div>
+                <div>{{ u.email }}</div>
+                <div class="cell-sub">{{ u.phone }}</div>
+              </div>
+            </td>
+            <td data-label="Joined"><span class="nowrap">{{ u.created_at.strftime('%d %b %Y') }}</span></td>
+            <td data-label="Status">
+              {% if u.is_active %}<span class="badge badge-active">Active</span>
+              {% else %}<span class="badge badge-suspended">Suspended</span>{% endif %}
+            </td>
+            <td data-label="Actions" class="col-actions">
+              <div class="row-actions">
+                {% if u.is_active %}
+                <form method="post" action="/admin/users/{{ u.id }}/suspend"
+                      data-confirm="Suspend {{ u.username }}? They will be logged out and unable to log in.">
+                  <button class="btn btn-outline btn-xs">Suspend</button>
+                </form>
+                {% else %}
+                <form method="post" action="/admin/users/{{ u.id }}/activate">
+                  <button class="btn btn-outline btn-xs">Activate</button>
+                </form>
+                {% endif %}
+                <form method="post" action="/admin/users/{{ u.id }}/reset-password"
+                      data-confirm="Reset the password for {{ u.username }}? A new temporary password will be created.">
+                  <button class="btn btn-outline btn-xs">Reset password</button>
+                </form>
+                <form method="post" action="/admin/users/{{ u.id }}/delete"
+                      data-confirm="Permanently delete {{ u.username }}? This cannot be undone.">
+                  <button class="btn btn-danger btn-xs">Delete</button>
+                </form>
+              </div>
+            </td>
+          </tr>
+        {% else %}
+          <tr><td colspan="5" class="empty">{% if q %}No members match "{{ q }}".{% else %}No members yet.{% endif %}</td></tr>
+        {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </main>
+
+  <script>
+    document.querySelectorAll("form[data-confirm]").forEach(function (form) {
+      form.addEventListener("submit", function (e) {
+        if (!window.confirm(form.dataset.confirm)) e.preventDefault();
+      });
+    });
+  </script>
+</body>
+</html>

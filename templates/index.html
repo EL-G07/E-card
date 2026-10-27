@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{ app_name }}</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', path='style.css') }}?v={{ css_v }}">
+</head>
+<body>
+  <header class="site-header">
+    <div class="bar">
+      <a class="brand" href="/">{{ app_name }}</a>
+      {% if account %}
+      <form method="post" action="/logout" class="header-actions">
+        <span class="header-user">Signed in as {{ account.full_name }}</span>
+        <button type="submit" class="btn btn-outline btn-sm">Log out</button>
+      </form>
+      {% endif %}
+    </div>
+  </header>
+
+  <main class="center-main">
+    <div class="hero">
+      {% if account %}
+      <p class="eyebrow">You are logged in</p>
+      <h1>Welcome, {{ account.full_name.split()[0] }}.</h1>
+      <p class="lead">
+        {% if role == 'admin' %}You are signed in as an administrator. Open the admin page to manage members.
+        {% else %}Create an event and issue invitation cards to the people on your guest list.{% endif %}
+      </p>
+      <div class="actions">
+        {% if role == 'admin' %}
+        <a class="btn btn-primary" href="/admin">Open admin page</a>
+        {% else %}
+        <a class="btn btn-primary" href="/dashboard">Open my dashboard</a>
+        <a class="btn btn-outline" href="/dashboard/create/event">Create an event</a>
+        {% endif %}
+        <form method="post" action="/logout"><button type="submit" class="btn btn-outline">Log out</button></form>
+      </div>
+
+      {% else %}
+      <p class="eyebrow">Event invitations &amp; guest check-in</p>
+      <h1>Invite your guests. Admit only those on your list.</h1>
+      <p class="lead">
+        Create your event, issue invitation cards, and make sure only the people
+        on your guest list attend.
+      </p>
+      <div class="actions">
+        <a class="btn btn-primary" href="/dashboard/create/event">Create an event</a>
+        <a class="btn btn-outline" href="/register">Register as a new member</a>
+        <a class="btn btn-outline" href="/login">Log in</a>
+      </div>
+      <p class="types">Weddings · Birthdays · Graduations</p>
+      {% endif %}
+    </div>
+  </main>
+</body>
+</html>

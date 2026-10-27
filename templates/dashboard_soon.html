@@ -1,0 +1,35 @@
+{% extends "dash_base.html" %}
+{% block title %}{{ page_title }}{% endblock %}
+
+{% block content %}
+<h1 class="page-title">{{ page_title }}</h1>
+<p class="auth-sub">{{ description }}</p>
+
+<section class="panel empty-state" aria-label="Coming soon">
+
+  {%if events == [] %}
+  <h2>Not yet created</h2>
+  {% else %}
+  <div class="table-eve">
+  <table class="events">
+    <tr>
+    <th>Title</th>
+    <th>Time</th>
+    <th>Venue</th>
+    <th>Description</th>
+    <th>created by</th>
+    </tr>
+    {% for e in events %}
+    <tr>
+      <td>{{e.title}}</td><td>{{e.date_time}}</td><td>{{e.venue}}</td><td>{{e.description}}</td><td><a class="btn btn-outline btn-xs" href="/dashboard/events/{{ e.id }}/report">
+  View report
+</a></td>
+    </tr>
+    {% endfor %}
+  </table>
+  </div>
+  {% endif %}
+
+  <a class="btn btn-outline btn-sm" href="/dashboard">Back to overview</a>
+</section>
+{% endblock %}

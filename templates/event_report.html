@@ -1,0 +1,75 @@
+{% extends "dash_base.html" %}
+{% block title %}Report — {{ event.title }}{% endblock %}
+
+{% block content %}
+<h1 class="page-title">{{ event.title }} — report</h1>
+<p class="auth-sub">{{ event.date_time.strftime("%d %b %Y, %H:%M") }} · {{ event.venue }}</p>
+
+<section class="stats" style="grid-template-columns: repeat(4, 1fr);">
+  <div class="stat">
+    <span class="stat-num">{{ stats.attended }}</span>
+    <span class="stat-label">Attended ({{ stats.attended_pct }}%)</span>
+  </div>
+  <div class="stat">
+    <span class="stat-num">{{ stats.absent }}</span>
+    <span class="stat-label">Absent ({{ stats.absent_pct }}%)</span>
+  </div>
+  <div class="stat">
+    <span class="stat-num">{{ stats.paid }}</span>
+    <span class="stat-label">Paid ({{ stats.paid_pct }}%)</span>
+  </div>
+  <div class="stat">
+    <span class="stat-num">{{ stats.unpaid }}</span>
+    <span class="stat-label">Unpaid ({{ stats.unpaid_pct }}%)</span>
+  </div>
+</section>
+
+<section class="panel">
+  <div class="panel-head">
+    <h2>Guests ({{ stats.total }})</h2>
+    <a class="btn btn-outline btn-sm" href="/dashboard/scan">Back to scanner</a>
+  </div>
+
+  <div class="table-eve">
+    <table class="events report-table">
+      <thead>
+        <tr>
+          <th>Guest</th>
+          <th>Contact</th>
+          <th>Paid</th>
+          <th>Attended</th>
+          <th>Scanned at</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for r in rows %}
+        <tr>
+          <td><div class="cell-main">{{ r.full_name }}</div></td>
+          <td>
+            <div class="cell-sub">{{ r.email }}</div>
+            <div class="cell-sub">{{ r.phone }}</div>
+          </td>
+          <td>
+            {% if r.paid %}
+              <span class="badge badge-active">Paid</span>
+            {% else %}
+              <span class="badge badge-suspended">Unpaid</span>
+            {% endif %}
+          </td>
+          <td>
+            {% if r.attended %}
+              <span class="badge badge-active">In</span>
+            {% else %}
+              <span class="badge badge-suspended">Absent</span>
+            {% endif %}
+          </td>
+          <td class="nowrap">
+            {{ r.scanned_at.strftime("%d %b %Y, %H:%M") if r.scanned_at else "—" }}
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}

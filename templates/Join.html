@@ -1,0 +1,50 @@
+{% extends "dash_base.html" %}
+{% block title %}Generate an event{% endblock %}
+
+{% block content %}
+<h1 class="page-title">Join an event</h1>
+<p class="auth-sub">Tell us about your event. You will add your guest list next.</p>
+
+<section class="panel form-panel">
+  {% if errors %}
+  <div class="alert alert-error" role="alert">Please fix the highlighted fields and try again.</div>
+  {% endif %}
+
+  <form method="post" action="/dashboard/join/event" novalidate>
+    <div class="field {% if errors.title %}has-error{% endif %}">
+      <label for="title">Event title</label>
+      <input id="title" name="title" type="text" maxlength="50"
+             placeholder="e.g. Juma &amp; Anna's Wedding" required>
+      {% if errors.title %}<p class="field-error">{{ errors }}</p>{% endif %}
+    </div>
+    <div class="field {% if errors.kind %} has-error{% endif %}">
+        <label for="card">Card type</label>
+        <select name="kind" id="card" required>
+            <option value="Single">Single</option>
+            <option value="Double">Double</option>
+        </select>
+        {% if errors.title %}<p class="field-error">{{ errors }}</p>{% endif %}
+    </div>
+
+    <div class="field {% if errors.event_key %}has-error{% endif %}">
+          <label for="event_key">Event key</label>
+          <div class="password-wrap">
+            <input id="event_key" name="event_key" type="password" autocomplete="new-password"
+                   placeholder="Create an event key" required>
+            <button type="button" class="toggle-pass" data-target="event_key" aria-label="Show password">Show</button>
+          </div>
+          {% if errors.event_key %}
+            <p class="field-error">{{ errors }}</p>
+
+          {% endif %}
+    </div>
+
+
+    <button type="submit" class="btn btn-primary" >Join event</button>
+
+  </form>
+    <p class="field-hint">
+  Forgot the key? <a class="link" href="/dashboard/join/forgot-key">Ask the organiser's password instead</a>.
+</p>
+</section>
+{% endblock %}

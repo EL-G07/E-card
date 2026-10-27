@@ -1,0 +1,58 @@
+{% extends "dash_base.html" %}
+{% block title %}Change event key — {{ event.title }}{% endblock %}
+
+{% block content %}
+<h1 class="page-title">Change event key</h1>
+<p class="auth-sub">
+  Updating the key for <strong>{{ event.title }}</strong>
+  ({{ event.date_time.strftime("%d %b %Y, %H:%M") }} · {{ event.venue }}).
+</p>
+
+<section class="panel form-panel">
+  {% if errors.identity %}
+    <div class="alert alert-error" role="alert">{{ errors.identity }}</div>
+  {% endif %}
+
+  <form method="post" action="/dashboard/events/{{ event.id }}/key" novalidate>
+    <div class="field {% if errors.current_key %}has-error{% endif %}">
+      <label for="current_key">Current event key</label>
+      <div class="password-wrap">
+        <input id="current_key" name="current_key" type="password"
+               autocomplete="off" required>
+        <button type="button" class="toggle-pass" data-target="current_key"
+                aria-label="Show password">Show</button>
+      </div>
+      {% if errors.current_key %}<p class="field-error">{{ errors.current_key }}</p>{% endif %}
+    </div>
+
+    <div class="field {% if errors.new_key %}has-error{% endif %}">
+      <label for="new_key">New event key</label>
+      <div class="password-wrap">
+        <input id="new_key" name="new_key" type="password"
+               autocomplete="new-password" required>
+        <button type="button" class="toggle-pass" data-target="new_key"
+                aria-label="Show password">Show</button>
+      </div>
+      {% if errors.new_key %}
+        <p class="field-error">{{ errors.new_key }}</p>
+      {% else %}
+        <p class="field-hint">At least 8 characters, with a letter and a number.</p>
+      {% endif %}
+    </div>
+
+    <div class="field {% if errors.confirm_key %}has-error{% endif %}">
+      <label for="confirm_key">Confirm new event key</label>
+      <div class="password-wrap">
+        <input id="confirm_key" name="confirm_key" type="password"
+               autocomplete="new-password" required>
+        <button type="button" class="toggle-pass" data-target="confirm_key"
+                aria-label="Show password">Show</button>
+      </div>
+      {% if errors.confirm_key %}<p class="field-error">{{ errors.confirm_key }}</p>{% endif %}
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save new key</button>
+    <a class="btn btn-outline" href="/dashboard/events/keys">Cancel</a>
+  </form>
+</section>
+{% endblock %}

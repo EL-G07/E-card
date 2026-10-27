@@ -1,0 +1,73 @@
+{% extends "dash_base.html" %}
+{% block title %}Paid invited events{% endblock %}
+
+{% block content %}
+<h1 class="page-title">Paid invited events</h1>
+<p class="auth-sub">Events you joined and have paid for. Show the QR code at the entrance.</p>
+
+{% if tickets %}
+<section class="panel">
+  <div class="panel-head">
+    <h2>Your paid tickets</h2>
+  </div>
+
+  <div class="table-eve">
+    <table class="events tickets-table">
+      <thead>
+        <tr>
+          <th>Event</th>
+          <th>Date &amp; time</th>
+          <th>Venue</th>
+          <th>Payment</th>
+          <th class="col-actions">Ticket</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for t in tickets %}
+        <tr>
+          <td data-label="Event">
+            <div class="cell-main">{{ t.event.title }}</div>
+            <div class="cell-sub">Joined as {{ t.payment.full_name }}</div>
+          </td>
+          <td data-label="Date &amp; time" class="nowrap">
+            {{ t.event.date_time.strftime("%d %b %Y, %H:%M") }}
+          </td>
+          <td data-label="Venue">{{ t.event.venue }}</td>
+          <td data-label="Payment">
+            <span class="badge badge-active">Paid</span>
+          </td>
+          <td data-label="Ticket" class="col-actions">
+            <div class="row-actions">
+              <a class="btn btn-outline btn-xs"
+                 href="{{ t.qr_data_uri }}"
+                 download="ticket-{{ t.event.id }}.png"
+                 title="Download QR as image">
+                 PNG
+              </a>
+              <a class="btn btn-primary btn-xs"
+                 href="/dashboard/events/{{ t.event.id }}/ticket.pdf">
+                 Download PDF
+              </a>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <p class="field-hint" style="margin-top:18px;">
+    Tip: the PDF includes the QR code, your name, the event details and a short explanation for the staff who scans it.
+  </p>
+</section>
+{% else %}
+<section class="panel">
+  <div class="empty-state">
+    <h2>No paid tickets yet</h2>
+    <p>You haven't paid for any event you joined. Pay for one to see its QR ticket here.</p>
+    <a class="btn btn-primary" href="/dashboard/events/unpaid">Go to unpaid events</a>
+    <a class="btn btn-outline" href="/dashboard/join/event" style="margin-left:8px;">Join an event</a>
+  </div>
+</section>
+{% endif %}
+{% endblock %}

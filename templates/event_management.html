@@ -1,0 +1,90 @@
+{% extends "dash_base.html" %}
+{% block title %}Generate an event{% endblock %}
+
+{% block content %}
+<h1 class="page-title">Generate an event</h1>
+<p class="auth-sub">Tell us about your event. You will add your guest list next.</p>
+
+<section class="panel form-panel">
+  {% if errors %}
+  <div class="alert alert-error" role="alert">Please fix the highlighted fields and try again.</div>
+  {% endif %}
+
+  <form method="post" action="/dashboard/create/event" novalidate>
+    <div class="field {% if errors.title %}has-error{% endif %}">
+      <label for="title">Event title</label>
+      <input id="title" name="title" type="text" maxlength="50" value="{{ values.title }}"
+             placeholder="e.g. Juma &amp; Anna's Wedding" required>
+      {% if errors.title %}<p class="field-error">{{ errors.title }}</p>{% endif %}
+    </div>
+
+    <div class="field {% if errors.type %}has-error{% endif %}">
+      <label for="type">Type of event</label>
+      <input id="type" name="type" type="text" maxlength="50" value="{{ values.type }}"
+             list="event-types" placeholder="Pick one or type your own" required>
+      <datalist id="event-types">
+        <option value="Wedding">
+        <option value="Birthday">
+        <option value="Graduation">
+        <option value="Anniversary">
+        <option value="Baby shower">
+        <option value="Conference">
+        <option value="Fundraiser">
+      </datalist>
+      {% if errors.type %}
+        <p class="field-error">{{ errors.type }}</p>
+      {% else %}
+        <p class="field-hint">Pick from the list so similar events are grouped together, or type your own.</p>
+      {% endif %}
+    </div>
+
+    <div class="field {% if errors.date_time %}has-error{% endif %}">
+      <label for="date_time">Date and time</label>
+      <input id="date_time" name="date_time" type="datetime-local" value="{{ values.date_time }}" required>
+      {% if errors.date_time %}<p class="field-error">{{ errors.date_time }}</p>{% endif %}
+    </div>
+
+    <div class="field {% if errors.venue %}has-error{% endif %}">
+      <label for="venue">Venue</label>
+      <input id="venue" name="venue" type="text" maxlength="90" value="{{ values.venue }}"
+             placeholder="e.g. Highland Pub Hall" required>
+      {% if errors.venue %}<p class="field-error">{{ errors.venue }}</p>{% endif %}
+    </div>
+
+    <div class="field {% if errors.description %}has-error{% endif %}">
+      <label for="description">Description <span class="optional">(optional)</span></label>
+      <textarea id="description" name="description" maxlength="500"
+                placeholder="Dress code, programme, anything guests should know">{{ values.description }}</textarea>
+      {% if errors.description %}<p class="field-error">{{ errors.description }}</p>{% endif %}
+    </div>
+
+    <div class="field {% if errors.event_key %}has-error{% endif %}">
+          <label for="event_key">Event key</label>
+          <div class="password-wrap">
+            <input id="event_key" name="event_key" type="password" autocomplete="new-password"
+                   placeholder="Create an event key" required>
+            <button type="button" class="toggle-pass" data-target="event_key" aria-label="Show password">Show</button>
+          </div>
+          {% if errors.event_key %}
+            <p class="field-error">{{ errors.event_key }}</p>
+          {% else %}
+            <p class="field-hint">At least 8 characters, with a letter and a number.</p>
+          {% endif %}
+    </div>
+
+        <div class="field {% if errors.confirm_event_key %}has-error{% endif %}">
+          <label for="confirm_event_key">Confirm event key</label>
+          <div class="password-wrap">
+            <input id="confirm_event_key" name="confirm_event_key" type="password" autocomplete="new-password"
+                   placeholder="Repeat your event key" required>
+            <button type="button" class="toggle-pass" data-target="confirm_event_key" aria-label="Show password">Show</button>
+          </div>
+          {% if errors.confirm_event_key %}<p class="field-error">{{ errors.confirm_event_key }}</p>{% endif %}
+        </div>
+
+
+    <button type="submit" class="btn btn-primary" >Create event</button>
+    <p class="field-hint">Saving is switched on in the next step, so this button is off for now.</p>
+  </form>
+</section>
+{% endblock %}

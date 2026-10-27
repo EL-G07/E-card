@@ -1,0 +1,33 @@
+{% extends "dash_base.html" %}
+{% block title %}Overview{% endblock %}
+
+{% block content %}
+<h1 class="page-title">Welcome, {{ user.full_name.split()[0] }}</h1>
+<p class="auth-sub">Here is a summary of your account and events.</p>
+
+<div class="stats">
+  <a class="stat stat-link" href="/dashboard/events/created">
+    <span class="stat-num">{{ created }}</span><span class="stat-label">Events created</span>
+  </a>
+  <a class="stat stat-link" href="/dashboard/events/paid">
+    <span class="stat-num">{{ paid }}</span><span class="stat-label">Paid invitations</span>
+  </a>
+  <a class="stat stat-link" href="/dashboard/events/unpaid">
+    <span class="stat-num">{{ unpaid }}</span><span class="stat-label">Unpaid invitations</span>
+  </a>
+</div>
+
+<section class="panel" aria-labelledby="acct-title">
+  <div class="panel-head">
+    <h2 id="acct-title">Your account</h2>
+    <a class="link" href="/dashboard/settings/account">Edit</a>
+  </div>
+  <dl class="details">
+    <div><dt>Full name</dt><dd>{{ user.full_name }}</dd></div>
+    <div><dt>Username</dt><dd>@{{ user.username }}</dd></div>
+    <div><dt>Email</dt><dd>{{ user.email }}</dd></div>
+    <div><dt>Phone</dt><dd>{{ user.phone }}</dd></div>
+    <div><dt>Member since</dt><dd>{{ user.created_at.strftime('%d %b %Y') }}</dd></div>
+  </dl>
+</section>
+{% endblock %}

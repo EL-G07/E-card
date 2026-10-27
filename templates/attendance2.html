@@ -1,0 +1,41 @@
+{% extends "attendance.html" %}
+{% block title %}Attendance event{% endblock %}
+
+{% block page %}
+
+<p class="auth-sub">Table for the attendee of {{title}} function.</p>
+
+<section class="panel empty-state" aria-label="Coming soon">
+
+  {%if event_2 == None %}
+  <h2>Not yet created</h2>
+  {% else %}
+  <div class="table-eve">
+  <table class="events">
+    <tr>
+    <th>Full name</th>
+    <th>Phone Number</th>
+    <th>Email</th>
+    <th>Card type</th>
+    <th>Payment</th>
+    </tr>
+    {% for e in event_2 %}
+    <tr>
+      <td>{{e.full_name}}</td><td>{{e.phone}}</td><td>{{e.email}}</td><td>{{e.kind}}</td>
+        {% if e.payment == False %}
+        <td style="color: red">Not paid</td>
+        {% else %}
+        <td style="color: green">Paid</td>
+        {% endif %}
+
+    </tr>
+    {% endfor %}
+  </table>
+  </div>
+  {% endif %}
+
+  <a class="btn btn-outline btn-sm" href="/dashboard">Back to overview</a>
+</section>
+
+
+{% endblock %}

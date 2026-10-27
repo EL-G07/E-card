@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Log in · {{ app_name }}</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', path='style.css') }}?v={{ css_v }}">
+</head>
+<body>
+  <header class="site-header">
+    <div class="bar"><a class="brand" href="/">{{ app_name }}</a></div>
+  </header>
+
+  <main class="center-main">
+    <section class="auth-card" aria-labelledby="login-title">
+      <h1 id="login-title">Welcome back</h1>
+      <p class="auth-sub">Log in to manage your events and guest lists.</p>
+
+      {% if error %}
+      <div class="alert alert-error" role="alert">{{ error }}</div>
+      {% endif %}
+      {% if registered %}
+      <div class="alert alert-success" role="status">Account created. You can now log in.</div>
+      {% endif %}
+      {% if reset %}
+        <div class="alert alert-success" role="status">
+          Your password was reset. Sign in with your new password.
+        </div>
+      {% endif %}
+
+      <form method="post" action="/login" novalidate>
+        <div class="field">
+          <label for="username">Username</label>
+          <input id="username" name="username" type="text" autocomplete="username"
+                 placeholder="Username or email" value="{{ username }}" required autofocus>
+        </div>
+
+        <div class="field">
+          <label for="password">Password</label>
+          <div class="password-wrap">
+            <input id="password" name="password" type="password" autocomplete="current-password"
+                   placeholder="Enter your password" required>
+            <button type="button" class="toggle-pass" id="togglePass"
+                    aria-label="Show password" aria-pressed="false">Show</button>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <label class="check">
+            <input type="checkbox" name="remember" value="1">
+            <span>Remember me</span>
+          </label>
+          <a class="link" href="/forgot-password">Forgot password?</a>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">Log in</button>
+      </form>
+
+      <p class="auth-foot">Don't have an account? <a class="link" href="/register">Register</a></p>
+    </section>
+
+    <a class="back-link" href="/">&larr; Back to home</a>
+  </main>
+
+  <script>
+    (function () {
+      var input = document.getElementById("password");
+      var btn = document.getElementById("togglePass");
+      btn.addEventListener("click", function () {
+        var show = input.type === "password";
+        input.type = show ? "text" : "password";
+        btn.textContent = show ? "Hide" : "Show";
+        btn.setAttribute("aria-label", show ? "Hide password" : "Show password");
+        btn.setAttribute("aria-pressed", String(show));
+      });
+    })();
+  </script>
+</body>
+</html>

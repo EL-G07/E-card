@@ -1,0 +1,64 @@
+{% extends "dash_base.html" %}
+{% block title %}Event keys{% endblock %}
+
+{% block content %}
+<h1 class="page-title">Event keys</h1>
+<p class="auth-sub">Update the key guests use to join your events. Share the new key with your guests after saving.</p>
+
+{% if saved_event %}
+  <div class="alert alert-success" role="status">
+    Event key updated for <strong>{{ saved_event }}</strong>.
+  </div>
+{% endif %}
+
+{% if events %}
+<section class="panel">
+  <div class="panel-head">
+    <h2>Your events</h2>
+  </div>
+
+  <div class="table-eve">
+    <table class="events">
+      <thead>
+        <tr>
+          <th>Event</th>
+          <th>Date &amp; time</th>
+          <th>Venue</th>
+          <th class="col-actions">Event key</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for e in events %}
+        <tr>
+          <td data-label="Event">
+            <div class="cell-main">{{ e.title }}</div>
+            <div class="cell-sub">{{ e.type }}</div>
+          </td>
+          <td data-label="Date &amp; time" class="nowrap">
+            {{ e.date_time.strftime("%d %b %Y, %H:%M") }}
+          </td>
+          <td data-label="Venue">{{ e.venue }}</td>
+          <td data-label="Event key" class="col-actions">
+            <div class="row-actions">
+              <a class="btn btn-primary btn-xs"
+                 href="/dashboard/events/{{ e.id }}/key">
+                 Change key
+              </a>
+            </div>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% else %}
+<section class="panel">
+  <div class="empty-state">
+    <h2>No events yet</h2>
+    <p>Create an event first, then you can set and change its key.</p>
+    <a class="btn btn-primary" href="/dashboard/create/event">Create an event</a>
+  </div>
+</section>
+{% endif %}
+{% endblock %}

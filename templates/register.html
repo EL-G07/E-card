@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Create account · {{ app_name }}</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{{ url_for('static', path='style.css') }}?v={{ css_v }}">
+</head>
+<body>
+  <header class="site-header">
+    <div class="bar"><a class="brand" href="/">{{ app_name }}</a></div>
+  </header>
+
+  <main class="center-main">
+    <section class="auth-card" aria-labelledby="register-title">
+      <h1 id="register-title">Create your account</h1>
+      <p class="auth-sub">Join to create events and manage your guest lists.</p>
+
+      {% if errors %}
+      <div class="alert alert-error" role="alert">Please fix the highlighted fields and try again.</div>
+      {% endif %}
+
+      <form method="post" action="/register" novalidate>
+        <div class="field {% if errors.full_name %}has-error{% endif %}">
+          <label for="full_name">Full name</label>
+          <input id="full_name" name="full_name" type="text" autocomplete="name"
+                 placeholder="e.g. Neema John Mushi" value="{{ values.full_name or '' }}" required autofocus>
+          {% if errors.full_name %}<p class="field-error">{{ errors.full_name }}</p>{% endif %}
+        </div>
+
+        <div class="field {% if errors.email %}has-error{% endif %}">
+          <label for="email">Email address</label>
+          <input id="email" name="email" type="email" autocomplete="email"
+                 placeholder="you@example.com" value="{{ values.email or '' }}" required>
+          {% if errors.email %}<p class="field-error">{{ errors.email }}</p>{% endif %}
+        </div>
+
+        <div class="field {% if errors.phone %}has-error{% endif %}">
+          <label for="phone">Phone number</label>
+          <input id="phone" name="phone" type="tel" autocomplete="tel"
+                 placeholder="+255 712 345 678" value="{{ values.phone or '' }}" required>
+          {% if errors.phone %}<p class="field-error">{{ errors.phone }}</p>{% endif %}
+        </div>
+
+        <div class="field {% if errors.username %}has-error{% endif %}">
+          <label for="username">Username</label>
+          <input id="username" name="username" type="text" autocomplete="username"
+                 placeholder="Choose a username for login" value="{{ values.username or '' }}" required>
+          {% if errors.username %}
+            <p class="field-error">{{ errors.username }}</p>
+          {% else %}
+            <p class="field-hint">3 to 30 characters: letters, numbers, dot or underscore.</p>
+          {% endif %}
+        </div>
+
+        <div class="field {% if errors.password %}has-error{% endif %}">
+          <label for="password">Password</label>
+          <div class="password-wrap">
+            <input id="password" name="password" type="password" autocomplete="new-password"
+                   placeholder="Create a password" required>
+            <button type="button" class="toggle-pass" data-target="password" aria-label="Show password">Show</button>
+          </div>
+          {% if errors.password %}
+            <p class="field-error">{{ errors.password }}</p>
+          {% else %}
+            <p class="field-hint">At least 8 characters, with a letter and a number.</p>
+          {% endif %}
+        </div>
+
+        <div class="field {% if errors.confirm_password %}has-error{% endif %}">
+          <label for="confirm_password">Confirm password</label>
+          <div class="password-wrap">
+            <input id="confirm_password" name="confirm_password" type="password" autocomplete="new-password"
+                   placeholder="Repeat your password" required>
+            <button type="button" class="toggle-pass" data-target="confirm_password" aria-label="Show password">Show</button>
+          </div>
+          {% if errors.confirm_password %}<p class="field-error">{{ errors.confirm_password }}</p>{% endif %}
+        </div>
+
+        <div class="field {% if errors.terms %}has-error{% endif %}">
+          <label class="check check-top">
+            <input type="checkbox" name="terms" value="on" {% if values.terms %}checked{% endif %}>
+            <span>I agree to the Terms of Service and Privacy Policy.</span>
+          </label>
+          {% if errors.terms %}<p class="field-error">{{ errors.terms }}</p>{% endif %}
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block">Create account</button>
+      </form>
+
+      <p class="auth-foot">Already have an account? <a class="link" href="/login">Log in</a></p>
+    </section>
+
+    <a class="back-link" href="/">&larr; Back to home</a>
+  </main>
+
+  <script>
+    document.querySelectorAll(".toggle-pass").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var input = document.getElementById(btn.dataset.target);
+        var show = input.type === "password";
+        input.type = show ? "text" : "password";
+        btn.textContent = show ? "Hide" : "Show";
+        btn.setAttribute("aria-label", show ? "Hide password" : "Show password");
+      });
+    });
+  </script>
+</body>
+</html>

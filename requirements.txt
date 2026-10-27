@@ -1,0 +1,9 @@
+# Karibu Events - direct dependencies (versions not pinned).
+# For exact versions from your own PyCharm venv, run: pip freeze > requirements.txt
+fastapi
+uvicorn
+jinja2
+python-multipart
+itsdangerous
+sqlalchemy
+alembic

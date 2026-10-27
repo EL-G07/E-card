@@ -1,0 +1,44 @@
+{% extends "dash_base.html" %}
+{% block title %}Account details{% endblock %}
+
+{% block content %}
+<h1 class="page-title">Account details</h1>
+<p class="auth-sub">Update your name and contact details.</p>
+
+<section class="panel form-panel">
+  {% if saved %}
+  <div class="alert alert-success" role="status">Your details have been saved.</div>
+  {% endif %}
+  {% if errors %}
+  <div class="alert alert-error" role="alert">Please fix the highlighted fields and try again.</div>
+  {% endif %}
+
+  <form method="post" action="/dashboard/settings/account" novalidate>
+    <div class="field {% if errors.full_name %}has-error{% endif %}">
+      <label for="full_name">Full name</label>
+      <input id="full_name" name="full_name" type="text" autocomplete="name" value="{{ values.full_name }}" required>
+      {% if errors.full_name %}<p class="field-error">{{ errors.full_name }}</p>{% endif %}
+    </div>
+
+    <div class="field {% if errors.email %}has-error{% endif %}">
+      <label for="email">Email address</label>
+      <input id="email" name="email" type="email" autocomplete="email" value="{{ values.email }}" required>
+      {% if errors.email %}<p class="field-error">{{ errors.email }}</p>{% endif %}
+    </div>
+
+    <div class="field {% if errors.phone %}has-error{% endif %}">
+      <label for="phone">Phone number</label>
+      <input id="phone" name="phone" type="tel" autocomplete="tel" value="{{ values.phone }}" required>
+      {% if errors.phone %}<p class="field-error">{{ errors.phone }}</p>{% endif %}
+    </div>
+
+    <div class="field">
+      <label for="username">Username</label>
+      <input id="username" type="text" value="{{ user.username }}" disabled>
+      <p class="field-hint">Your username cannot be changed.</p>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Save changes</button>
+  </form>
+</section>
+{% endblock %}
